@@ -476,7 +476,7 @@ DNF1:
 ; The answer is simple, storing text in the most awful way XD
 ;--------------------------------------------------------------------------------------------------
 Thnks:
-  .db "Thx to Luis Querido and Suronome and ti for no complete docs :P",0
+  .db "Thx to Luis Querido and Suronome for some code pieces and ti for no complete docs :P",0
 SendinDeathNote1:
 	.db "Ka",0
 SendinDeathNote2:
