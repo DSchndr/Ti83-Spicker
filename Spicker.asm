@@ -9,7 +9,10 @@
 ;  - Code cleanups
 ;  - Use $FE & $FF for inverted text
 ;  - Some other stuff (i cant remember)
-;  - Redo the "TextLoader".
+;  - Redo the "TextLoader" thing to load from an block of data instead of manually programming it. eg. $FC for graphics $FD for newline and saving it in an hidden program
+;  - Implement an installer
+;  - Bypass reset by ti link by faking link protocol (but which teacher resets all calcs on the pc? well there are some (according to some people i know :D))
+;  - Graphics! ;)
 
 ; If you think this code is good you should check your doc.
 ; If you modify the code, please contribute / send an copy of it to me to make it less awful.
@@ -153,6 +156,10 @@ CompareButton:					;Compares value stored in a and displays txt.
 	jp z,Txt6
 	cp 7
 	jp z,Txt7
+	cp 8
+	jp z,Txt8
+	cp 9
+	jp z,Txt9
 	pop bc	
 	jp KeyLoop					;Jump back to the loop
 
@@ -196,7 +203,14 @@ Txt6:
 Txt7:
 	ld a,$06
 	ld b,$36
-
+	jr LdText
+Txt8:
+	ld a,$07
+	ld b,$3F
+	jr LdText
+Txt9:
+	ld a,$08
+	ld b,$49
 LdText:
 	call InitText
 	ld a,b
@@ -427,7 +441,7 @@ Getthehelloutofhere:
 	jp _eraseeol
 
 Suicide:					;Should remove ALL evidence of this program. ---NEEDS TO BE COMPLETED---
-	ret 
+	jp $4062 ;Jump to reset romcall
 
 DeathNote:					;Function of another program (TInuke). Crashes calc that is connected.
     call _clrlcdfull
@@ -447,6 +461,7 @@ DeathNote:					;Function of another program (TInuke). Crashes calc that is conne
     ld   hl, SendinDeathNote2
     call _puts
     call Getthehelloutofhere
+    ret ;bugfix: program exits with weird behavior
 
 DNF2:
     push af      
@@ -522,14 +537,14 @@ Abouttxt7:
 Abouttxt8:
 	.db $05,$7b,"Y=]: Crashed GTR an I/O",0
 Abouttxt9:
-	.db $1c," Have fun  ",$5e,$5f,$5e,"  | V: Physik",0
+	.db $1c," Have fun  ",$5e,$5f,$5e," ",0
 
 ; Mother of god...
 Texte:
-	.dw Text1,Text2,Text3,Text4,Text5,Text6,Text7,Text8,Text9,Text10,Text11,Text12,Text13,Text14,Text15,Text16,Text17,Text18,Text19,Text20,Text21,Text22,Text23,Text24,Text25,Text26,Text27,Text28,Text29,Text30,Text31,Text32,Text33,Text34,Text35,Text36,Text37,Text38,Text39,Text40,Text41,Text42,Text43,Text44,Text45,Text46,Text38,Text48,Text49,Text50,Text51,Text52,Text53,Text54,Text55,Text56,Text57,Text58,Text59,Text60,Text61,Text62,Text63
+	.dw Text1,Text2,Text3,Text4,Text5,Text6,Text7,Text8,Text9,Text10,Text11,Text12,Text13,Text14,Text15,Text16,Text17,Text18,Text19,Text20,Text21,Text22,Text23,Text24,Text25,Text26,Text27,Text28,Text29,Text30,Text31,Text32,Text33,Text34,Text35,Text36,Text37,Text38,Text39,Text40,Text41,Text42,Text43,Text44,Text45,Text46,Text47,Text48,Text49,Text50,Text51,Text52,Text53,Text54,Text55,Text56,Text57,Text58,Text59,Text60,Text61,Text62,Text63,Text64,Text65,Text66,Text67,Text68,Text69,Text70,Text71,Text72,Text73,Text74,Text75,Text76,Text77,Text78,Text79,Text80,Text81
 
 Titel:
-	.dw Titel1,Titel2,Titel3,Titel4,Titel5,Titel6,Titel7
+	.dw Titel1,Titel2,Titel3,Titel4,Titel5,Titel6,Titel7,Titel8,Titel9
 
 ; Titel
 ;--------------------------------------------------------------------------------------------------
@@ -548,12 +563,8 @@ Titel6:
 	.db "6",$1a," ",0
 Titel7:
 	.db "7",$1a," ",0
-Titel8:
-	.db "8",$1a," ",0
-Titel9:
-	.db "9",$1a," ",0
-Titel10:
-	.db "10",$1a," ",0
+	
+;8-idk can be found in the tab sections
 
 ;1. Tab
 ;--------------------------------------------------------------------------------------------------
@@ -667,8 +678,8 @@ Text45:
 
 Text46:
 	.db	"",0
-;Text47:
-;	.db "",0	;replaced with 38 in the pointer thing cuz same txt and i need memory :P									
+Text47:
+	.db 	"",0									
 Text48:
 	.db	"",0
 Text49:
@@ -706,6 +717,56 @@ Text62:
 Text63:
 	.db	"",0
 
+;8. Tab ***NEW STYLE***
+;--------------------------------------------------------------------------------------------------
+
+Titel8: 
+	.db "8",$1a,"",0
+
+Text64:
+	.db "",0
+Text65:
+	.db "",0
+Text66:
+	.db "",0
+Text67:
+	.db "",0
+Text68:
+	.db "",0
+Text69:
+	.db "",0
+Text70:
+	.db "",0
+Text71:
+	.db "",0
+Text72:
+	.db "",0
+
+
+;9. Tab ***NEW STYLE***
+;--------------------------------------------------------------------------------------------------
+
+Titel9:
+	.db "9",$1a," ",0
+
+Text73:
+	.db "ecececececececececec",0
+Text74:
+	.db "",0
+Text75:
+	.db "",0
+Text76:
+	.db "",0
+Text77:
+	.db "",0
+Text78:
+	.db "",0
+Text79:
+	.db "",0
+Text80:
+	.db "",0
+Text81:
+	.db "cececececececececececec",0
 .end
 
 ;24 is an magical number
